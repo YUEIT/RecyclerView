@@ -8,7 +8,7 @@ allprojects {
 		}
 	}
 ```
- ##### Step 2. Add the dependency、	
+##### Step 2. Add the dependency、	
 ```
 dependencies {
 	        compile 'com.github.YUEIT:RecyclerView:fae8117076'
