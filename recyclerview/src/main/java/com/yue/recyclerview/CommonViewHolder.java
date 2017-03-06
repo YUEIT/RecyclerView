@@ -99,11 +99,11 @@ public class CommonViewHolder<T> extends RecyclerView.ViewHolder{
     }
 
 
-    interface OnItemClickListener<T>{
+    public interface OnItemClickListener<T>{
          void onItemClick(int position, T t);
     }
 
-    interface OnItemLongClickListener<T>{
+    public interface OnItemLongClickListener<T>{
         void onItemLongClick(int position, T t);
     }
 
