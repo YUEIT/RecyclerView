@@ -71,7 +71,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             super.onItemRangeMoved(fromPosition, toPosition, itemCount);
             int headerViewsCountCount = getHeaderViewsCount();
-            notifyItemRangeChanged(Math.min(fromPosition, toPosition) + headerViewsCountCount, Math.abs(fromPosition - toPosition) + itemCount);
+            notifyItemMoved(Math.min(fromPosition, toPosition) + headerViewsCountCount, Math.abs(fromPosition - toPosition) + itemCount);
         }
     };
 
@@ -129,6 +129,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
     public void notifyItemInsertedReally(int position){
         if (null != mInnerAdapter && position > -1 && position < mInnerAdapter.getItemCount()){
             mInnerAdapter.notifyItemInserted(position);
+            mInnerAdapter.notifyItemRangeChanged(position, list.size() - position);
         }
     }
 
@@ -139,6 +140,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
     public void notifyItemRemovedReally(int position){
         if (null != mInnerAdapter && position > -1 && position < mInnerAdapter.getItemCount()){
             mInnerAdapter.notifyItemRemoved(position);
+            mInnerAdapter.notifyItemRangeChanged(position, list.size() - position);
         }
     }
 
@@ -152,6 +154,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
         if (null != mInnerAdapter && fromPosition > -1 && fromPosition < mInnerAdapter.getItemCount()
                 && toPosition > -1 && toPosition < mInnerAdapter.getItemCount()){
             mInnerAdapter.notifyItemMoved(fromPosition, toPosition);
+            mInnerAdapter.notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition - toPosition) );
         }
     }
 
@@ -503,8 +506,8 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
             if (null != holder && holder instanceof CommonViewHolder) {
                 CommonViewHolder<T> m = (CommonViewHolder<T>) holder;
                 if (payloads.isEmpty()) {
-                    m.setOnItemClick(position, getItem(position), onItemClickListener);
-                    m.setOnItemLongClick(position, getItem(position), onItemLongClickListener);
+                    m.setOnItemClickListener(position, getItem(position), onItemClickListener);
+                    m.setOnItemLongClickListener(position, getItem(position), onItemLongClickListener);
                     T t = getItem(position);
                     setItemVisible(holder.itemView, t != null);
                     if(t!=null){
@@ -549,4 +552,6 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
     public abstract void bindData(CommonViewHolder<T> holder, int position, T t);
 
 }
+
+
 

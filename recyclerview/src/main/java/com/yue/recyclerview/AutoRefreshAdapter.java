@@ -2,6 +2,7 @@ package com.yue.recyclerview;
 
 /**
  * 介绍：用DiffUtil和SortedList修改过的支持自动刷新和数据去重
+ * （注意这个并不适合于数据移动，因为SortedList有自动排序的功能）
  * 作者：luobiao
  * 邮箱：luobiao@imcoming.cn
  * 时间：2016/12/16.
@@ -72,7 +73,7 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             super.onItemRangeMoved(fromPosition, toPosition, itemCount);
             int headerViewsCountCount = getHeaderViewsCount();
-            notifyItemRangeChanged(Math.min(fromPosition, toPosition) + headerViewsCountCount, Math.abs(fromPosition - toPosition) + itemCount);
+            notifyItemMoved(Math.min(fromPosition, toPosition) + headerViewsCountCount, Math.abs(fromPosition - toPosition) + itemCount);
         }
     };
 
@@ -122,6 +123,7 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
     public void notifyItemInsertedReally(int position){
         if (null != mInnerAdapter && position > -1 && position < mInnerAdapter.getItemCount()){
             mInnerAdapter.notifyItemInserted(position);
+            mInnerAdapter.notifyItemRangeChanged(position, list.size() - position);
         }
     }
 
@@ -132,6 +134,7 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
     public void notifyItemRemovedReally(int position){
         if (null != mInnerAdapter && position > -1 && position < mInnerAdapter.getItemCount()){
             mInnerAdapter.notifyItemRemoved(position);
+            mInnerAdapter.notifyItemRangeChanged(position, list.size() - position);
         }
     }
 
@@ -145,6 +148,7 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
         if (null != mInnerAdapter && fromPosition > -1 && fromPosition < mInnerAdapter.getItemCount()
                 && toPosition > -1 && toPosition < mInnerAdapter.getItemCount()){
             mInnerAdapter.notifyItemMoved(fromPosition, toPosition);
+            mInnerAdapter.notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition - toPosition) );
         }
     }
 
@@ -497,7 +501,10 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
      * @param viewType
      * @return
      */
-    public abstract CommonViewHolder<T> getViewHolder(Context context, ViewGroup parent, int viewType);
+    public RecyclerView.ViewHolder getViewHolder(Context context, ViewGroup parent, int viewType){
+        return com.yue.recyclerview.CommonViewHolder.getHolder(context, getLayoutIdByType(viewType), parent);
+    }
+
 
     /**
      * 设置Item
@@ -547,8 +554,8 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
             if (null != holder && holder instanceof CommonViewHolder) {
                 CommonViewHolder<T> m = (CommonViewHolder<T>) holder;
                 if (payloads.isEmpty()) {
-                    m.setOnItemClick(position, getItem(position), onItemClickListener);
-                    m.setOnItemLongClick(position, getItem(position), onItemLongClickListener);
+                    m.setOnItemClickListener(position, getItem(position), onItemClickListener);
+                    m.setOnItemLongClickListener(position, getItem(position), onItemLongClickListener);
                     T t = getItem(position);
                     setItemVisible(holder.itemView, t != null);
                     if(t!=null){
@@ -579,8 +586,11 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
         return getViewType(position);
     }
 
-    protected abstract int getViewType(int position);
+    protected int getViewType(int position){
+        return 0;
+    }
 
+    public abstract int getLayoutIdByType(int viewType);
 
     /**
      * 最好直接用这个Callback，自定义需要方法中回调mInnerAdapter的notify方法
@@ -588,7 +598,7 @@ public abstract class AutoRefreshAdapter<T> extends RecyclerView.Adapter<Recycle
      * SortedListAdapterCallback回调不是包装类的notify如果有header/footer会刷新出错
      * 继承这个Callback，会需要重写compare方法（比较排序）、areContentsTheSame（比较内容是否相等）、areItemsTheSame（比较是否为同一项）
      */
-     public abstract class AutoSortedListCallback<T2> extends SortedList.Callback<T2>{
+    public abstract class AutoSortedListCallback<T2> extends SortedList.Callback<T2>{
         @Override
         public void onInserted(int position, int count) {
             notifyItemInsertedReally(position);

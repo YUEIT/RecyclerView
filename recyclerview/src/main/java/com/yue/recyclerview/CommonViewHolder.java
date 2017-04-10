@@ -26,9 +26,11 @@ public class CommonViewHolder<T> extends RecyclerView.ViewHolder{
         super(itemView);
     }
 
-    public View getView(int id){
+    public <V extends View> V getView(int id){
+
         if(itemView != null){
-            return itemView.findViewById(id);
+            View view = itemView.findViewById(id);
+            return (V)view;
         }else{
             return null;
         }
@@ -63,19 +65,26 @@ public class CommonViewHolder<T> extends RecyclerView.ViewHolder{
         }
     }
 
-    public void setOnClick(int id, View.OnClickListener l){
+    public void setOnClickListener(int id, View.OnClickListener l){
         if(getView(id)!=null) {
             getView(id).setOnClickListener(l);
         }
     }
 
-    public void setOnLongClick(int id, View.OnLongClickListener l){
+    public void setOnLongClickListener(int id, View.OnLongClickListener l){
         if(getView(id)!=null) {
             getView(id).setOnLongClickListener(l);
         }
     }
 
-    public void setOnItemClick(final int position, final T t, final OnItemClickListener listener){
+    public void setOnTouchListener(int id, View.OnTouchListener l){
+        if(getView(id)!=null) {
+            getView(id).setOnTouchListener(l);
+        }
+    }
+
+
+    public void setOnItemClickListener(final int position, final T t, final OnItemClickListener listener){
         if(itemView != null && listener != null){
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,7 +95,7 @@ public class CommonViewHolder<T> extends RecyclerView.ViewHolder{
         }
     }
 
-    public void setOnItemLongClick(final int position, final T t, final OnItemLongClickListener listener){
+    public void setOnItemLongClickListener(final int position, final T t, final OnItemLongClickListener listener){
         if(itemView != null && listener != null){
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -106,6 +115,5 @@ public class CommonViewHolder<T> extends RecyclerView.ViewHolder{
     public interface OnItemLongClickListener<T>{
         void onItemLongClick(int position, T t);
     }
-
 
 }
