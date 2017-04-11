@@ -11,6 +11,6 @@ allprojects {
 ##### Step 2. Add the dependency、	
 ```
 dependencies {
-	       compile 'com.github.YUEIT:RecyclerView:65534151ca'
+	       compile 'com.github.YUEIT:RecyclerView:67bf175a7e'
 	}
  ```
