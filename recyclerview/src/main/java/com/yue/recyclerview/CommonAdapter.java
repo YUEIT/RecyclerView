@@ -154,7 +154,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
         if (null != mInnerAdapter && fromPosition > -1 && fromPosition < mInnerAdapter.getItemCount()
                 && toPosition > -1 && toPosition < mInnerAdapter.getItemCount()){
             mInnerAdapter.notifyItemMoved(fromPosition, toPosition);
-            mInnerAdapter.notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition - toPosition) );
+            mInnerAdapter.notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.abs(fromPosition - toPosition)+1);
         }
     }
 
