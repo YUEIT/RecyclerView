@@ -37,6 +37,13 @@ public class SwipeLayoutManager extends CommonLayoutManager{
         return true;
     }
 
+
+    @Override
+    public int getWidthMode() {
+        //默认情况下如果设置setAutoMeasureEnabled(true)，测量模式为EXACTLY
+        return View.MeasureSpec.AT_MOST;
+    }
+
     @Override
     public void fillLayout(RecyclerView.Recycler recycler, LayoutState layoutState, RecyclerView.State state) {
         int remainingSpace = layoutState.mAvailable;
