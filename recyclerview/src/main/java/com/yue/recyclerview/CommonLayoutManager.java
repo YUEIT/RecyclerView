@@ -34,11 +34,11 @@ public class CommonLayoutManager extends  RecyclerView.LayoutManager {
 
     public CommonLayoutManager(int mOrientation){
         setAutoMeasureEnabled(true); //设置该值可以兼容viewHolder设置为wrap_content
-        ensureLayoutState();
         if(mOrientation != OrientationHelper.HORIZONTAL && mOrientation != OrientationHelper.VERTICAL){
             throw new IllegalArgumentException("invalid orientation:" + mOrientation);
         }
         this.mOrientation = mOrientation;
+        ensureLayoutState();
     }
 
     /**
