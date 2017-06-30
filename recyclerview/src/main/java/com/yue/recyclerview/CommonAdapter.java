@@ -70,8 +70,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<RecyclerView
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-            int headerViewsCountCount = getHeaderViewsCount();
-            notifyItemMoved(Math.min(fromPosition, toPosition) + headerViewsCountCount, Math.abs(fromPosition - toPosition) + itemCount);
+            notifyItemMoved(fromPosition,toPosition);
         }
     };
 
